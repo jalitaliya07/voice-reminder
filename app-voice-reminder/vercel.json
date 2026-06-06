@@ -1,5 +1,6 @@
 {
   "cleanUrls": true,
+  "outputDirectory": "dist/app-voice-reminder/browser",
   "rewrites": [
     {
       "source": "/api/:path*",
