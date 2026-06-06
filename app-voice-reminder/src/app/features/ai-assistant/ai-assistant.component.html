@@ -1,0 +1,86 @@
+<div class="assistant-container">
+
+  <!-- Left: Pulsing Orb Visualizer -->
+  <div class="visualizer-section glass-card animate-fade-in-up">
+    <div class="avatar-container">
+      <div class="avatar-ring-outer" [class.speaking]="voiceInput.isListening()"></div>
+      <div class="avatar-ring-inner" [class.speaking]="voiceInput.isListening()"></div>
+      <div class="avatar-core">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="orb-icon">
+          <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z"/>
+          <path d="M12 6a6 6 0 1 0 6 6 6 6 0 0 0-6-6zm0 10a4 4 0 1 1 4-4 4 4 0 0 1-4 4z"/>
+        </svg>
+      </div>
+    </div>
+    <div class="visualizer-text">
+      <h2>Jarvis Engine</h2>
+      <p>{{ voiceInput.isListening() ? 'Analyzing frequencies...' : 'System stand-by' }}</p>
+    </div>
+  </div>
+
+  <!-- Right: Conversation Feed -->
+  <div class="chat-section glass-card animate-fade-in-up">
+    <div class="chat-header">
+      <div class="status-indicator">
+        <span class="status-dot online"></span>
+        <span class="status-label">Voice Assistant Offline Mode</span>
+      </div>
+    </div>
+
+    <!-- Messages list -->
+    <div class="messages-feed" #scrollContainer>
+      @for (msg of messages(); track msg.timestamp) {
+        <div class="message-bubble" [class.user]="msg.sender === 'user'" [class.assistant]="msg.sender === 'assistant'">
+          <div class="message-avatar">
+            {{ msg.sender === 'user' ? 'U' : 'AI' }}
+          </div>
+          <div class="message-content">
+            <p>{{ msg.text }}</p>
+            <span class="message-time">{{ msg.timestamp | date:'shortTime' }}</span>
+          </div>
+        </div>
+      }
+
+      @if (isTyping()) {
+        <div class="message-bubble assistant typing">
+          <div class="message-avatar">AI</div>
+          <div class="message-content">
+            <div class="typing-indicator">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Footer Input Bar -->
+    <div class="input-bar">
+      <button class="mic-btn" (click)="toggleVoice()" [class.active]="voiceInput.isListening()" [title]="voiceInput.isListening() ? 'Stop voice input' : 'Speak to Jarvis'">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+          <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+          <path d="M19 10a7 7 0 0 1-14 0M12 19v4m-4 0h8"/>
+        </svg>
+      </button>
+
+      <form (submit)="submitMessage()" class="text-form">
+        <input
+          type="text"
+          [(ngModel)]="userText"
+          name="userText"
+          placeholder="Command Jarvis..."
+          class="chat-input"
+          autocomplete="off"
+          [disabled]="voiceInput.isListening()"
+        />
+        <button type="submit" class="send-btn" [disabled]="!userText.trim()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+            <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+          </svg>
+        </button>
+      </form>
+    </div>
+  </div>
+
+</div>

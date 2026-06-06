@@ -1,0 +1,139 @@
+<div class="settings-container animate-fade-in-up">
+  
+  <div class="section-header">
+    <div>
+      <h1 class="page-title">Settings ⚙️</h1>
+      <p class="subtitle">Personalize your AI Voice Reminder experience</p>
+    </div>
+  </div>
+
+  <form (submit)="saveSettings()" class="settings-grid">
+
+    <!-- Card 1: User & Theme -->
+    <div class="glass-card settings-card">
+      <h3 class="card-title">User Profile & Theme</h3>
+      <div class="card-body">
+        
+        <div class="form-group">
+          <label for="userName">User Name</label>
+          <input type="text" id="userName" name="userName" [(ngModel)]="userName" placeholder="What should Jarvis call you?" class="form-input" required autocomplete="off" />
+        </div>
+
+        <div class="form-group">
+          <label for="theme">Application Theme</label>
+          <select id="theme" name="theme" [(ngModel)]="theme" class="form-select">
+            <option value="dark">Jarvis Glow (Dark)</option>
+            <option value="light">Solar Clean (Light)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="language">System Language</label>
+          <select id="language" name="language" [(ngModel)]="language" class="form-select">
+            <option value="en-US">English (United States)</option>
+            <option value="gu-IN">Gujarati (ગુજરાતી)</option>
+          </select>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Card 2: System Behavior -->
+    <div class="glass-card settings-card">
+      <h3 class="card-title">System Integration</h3>
+      <div class="card-body">
+        
+        <div class="form-group">
+          <label for="autoStart">Launch on Startup</label>
+          <select id="autoStart" name="autoStart" [(ngModel)]="autoStart" class="form-select">
+            <option value="true">Enabled</option>
+            <option value="false">Disabled</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="minimizeToTray">Close/Minimize to Tray</label>
+          <select id="minimizeToTray" name="minimizeToTray" [(ngModel)]="minimizeToTray" class="form-select">
+            <option value="true">Yes, run in background</option>
+            <option value="false">No, close application</option>
+          </select>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Card 3: AI Voice Synthesis (TTS) -->
+    <div class="glass-card settings-card full-width">
+      <h3 class="card-title">AI Voice Settings (TTS)</h3>
+      <div class="card-body voice-settings-grid">
+        
+        <div class="form-group voice-select-group">
+          <label for="voiceName">Speech Voice</label>
+          <select id="voiceName" name="voiceName" [(ngModel)]="voiceName" class="form-select">
+            <option value="default">System Default Voice</option>
+            @for (v of voices; track v.name) {
+              <option [value]="v.name">{{ v.name }} ({{ v.lang }})</option>
+            }
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Volume ({{ (voiceVolume * 100) | number:'1.0-0' }}%)</label>
+          <input type="range" name="voiceVolume" min="0" max="1" step="0.1" [(ngModel)]="voiceVolume" class="form-range" />
+        </div>
+
+        <div class="form-group">
+          <label>Speech Rate ({{ voiceRate }}x)</label>
+          <input type="range" name="voiceRate" min="0.5" max="2" step="0.1" [(ngModel)]="voiceRate" class="form-range" />
+        </div>
+
+        <div class="form-group">
+          <label>Speech Pitch ({{ voicePitch }})</label>
+          <input type="range" name="voicePitch" min="0.5" max="2" step="0.1" [(ngModel)]="voicePitch" class="form-range" />
+        </div>
+
+        <div class="voice-test-action">
+          <button type="button" class="btn-ghost" (click)="testVoice()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
+            </svg>
+            Test TTS Voice
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Card 4: Sound Alerts -->
+    <div class="glass-card settings-card">
+      <h3 class="card-title">Sound Settings</h3>
+      <div class="card-body">
+        
+        <div class="form-group">
+          <label for="notificationSound">Notification chime</label>
+          <select id="notificationSound" name="notificationSound" [(ngModel)]="notificationSound" class="form-select">
+            <option value="chime.mp3">Digital Chime</option>
+            <option value="futuristic.mp3">Futuristic Synth</option>
+            <option value="minimal.mp3">Minimal Pulse</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Alert Volume ({{ (notificationVolume * 100) | number:'1.0-0' }}%)</label>
+          <input type="range" name="notificationVolume" min="0" max="1" step="0.1" [(ngModel)]="notificationVolume" class="form-range" />
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Actions Footer -->
+    <div class="form-actions full-width">
+      <span class="status-msg" *ngIf="message()">{{ message() }}</span>
+      <button type="submit" class="btn-primary" [disabled]="isSaving()">
+        {{ isSaving() ? 'Saving changes...' : 'Apply Changes' }}
+      </button>
+    </div>
+
+  </form>
+
+</div>

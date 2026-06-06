@@ -1,0 +1,214 @@
+<div class="upcoming-container">
+
+  <!-- Left: Grouped Upcoming Reminders -->
+  <div class="reminders-section animate-fade-in-up">
+    <div class="section-header">
+      <div>
+        <h1 class="page-title">Upcoming Reminders 📅</h1>
+        <p class="subtitle">See what lies ahead in the next few days</p>
+      </div>
+    </div>
+
+    @if (isLoading()) {
+      <div class="loading-state">
+        <div class="spinner"></div>
+        <p>Syncing schedule...</p>
+      </div>
+    } @else if (groupedReminders().length === 0) {
+      <div class="empty-state glass-card">
+        <div class="empty-icon">📅</div>
+        <h3>No upcoming reminders</h3>
+        <p>Your calendar is clean! Add some reminders using the panel on the right.</p>
+      </div>
+    } @else {
+      <div class="timeline-container">
+        @for (group of groupedReminders(); track group.dateKey) {
+          <div class="timeline-group">
+            <div class="timeline-header">
+              <span class="timeline-dot"></span>
+              <h2 class="timeline-date">{{ group.dateLabel }}</h2>
+            </div>
+            
+            <div class="timeline-cards">
+              @for (r of group.reminders; track r.id) {
+                <div class="reminder-card glass-card" [class.completed]="r.is_completed">
+                  <div [class]="'priority-bar ' + getPriorityClass(r.priority)"></div>
+                  <div class="card-content">
+                    <div class="card-header">
+                      <span class="card-time">{{ formatTime(r.time) }}</span>
+                      <span [class]="getCategoryClass(r.category)">{{ r.category }}</span>
+                    </div>
+                    <h3 class="card-title">{{ r.title }}</h3>
+                    @if (r.description) {
+                      <p class="card-desc">{{ r.description }}</p>
+                    }
+                    <div class="card-footer">
+                      <span class="badge priority-badge" [class]="'badge-' + r.priority">{{ r.priority }}</span>
+                      @if (r.voice_enabled) {
+                        <span class="voice-badge" title="AI Voice Announcement Enabled">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12">
+                            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                            <path d="M19 10a7 7 0 0 1-14 0"/>
+                          </svg>
+                          Voice
+                        </span>
+                      }
+                    </div>
+                  </div>
+
+                  <!-- Actions -->
+                  <div class="card-actions">
+                    @if (r.is_completed === 0) {
+                      <button class="action-btn complete" (click)="completeReminder(r)" title="Mark Complete">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                          <polyline points="20 6 9 17 4 12"/>
+                        </svg>
+                      </button>
+                      <button class="action-btn snooze" (click)="snoozeReminder(r)" title="Snooze 10 mins">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                          <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                        </svg>
+                      </button>
+                    }
+                    <button class="action-btn delete" (click)="deleteReminder(r.id)" title="Delete Reminder">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                        <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+
+  <!-- Right: Add Reminder Panel -->
+  <div class="add-section animate-fade-in-up">
+    <div class="glass-card add-card">
+      <h2 class="panel-title">Add Upcoming Reminder</h2>
+
+      <!-- Voice Quick Input Section -->
+      <div class="voice-assistant-section">
+        <div class="assistant-ui" [class.listening]="voiceInput.isListening()">
+          <button class="mic-button" (click)="toggleVoice()" [title]="voiceInput.isListening() ? 'Stop listening' : 'Start voice input'">
+            <div class="pulse-ring" *ngIf="voiceInput.isListening()"></div>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+              <path d="M19 10a7 7 0 0 1-14 0M12 19v4m-4 0h8"/>
+            </svg>
+          </button>
+          <div class="voice-status">
+            <span class="status-dot" [class.active]="voiceInput.isListening()"></span>
+            <p>{{ voiceInput.isListening() ? 'Listening to voice...' : 'Click mic to speak reminder' }}</p>
+          </div>
+        </div>
+
+        <!-- Real-time transcript feedback -->
+        <div class="transcript-preview" *ngIf="voiceInput.isListening() || voiceInput.transcript()">
+          <span class="preview-label">Transcript:</span>
+          <p class="transcript-text">
+            {{ voiceInput.interimText() || voiceInput.transcript() || '...' }}
+          </p>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Quick Add Form -->
+      <form (submit)="onSubmit()" class="add-form">
+        <div class="form-group">
+          <label for="title">Title</label>
+          <input type="text" id="title" name="title" [(ngModel)]="title" placeholder="What should we remind you of?" class="form-input" required autocomplete="off" />
+        </div>
+
+        <div class="form-group">
+          <label for="description">Description (Optional)</label>
+          <textarea id="description" name="description" [(ngModel)]="description" placeholder="Any additional context..." class="form-textarea"></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="date">Date</label>
+            <input type="date" id="date" name="date" [(ngModel)]="date" class="form-input" required />
+          </div>
+
+          <div class="form-group">
+            <label for="time">Time</label>
+            <input type="time" id="time" name="time" [(ngModel)]="time" class="form-input" required />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="category">Category</label>
+            <select id="category" name="category" [(ngModel)]="category" class="form-select">
+              <option value="general">General</option>
+              <option value="work">Work</option>
+              <option value="health">Health</option>
+              <option value="personal">Personal</option>
+              <option value="study">Study</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="priority">Priority</label>
+            <select id="priority" name="priority" [(ngModel)]="priority" class="form-select">
+              <option value="low">Low</option>
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+              <option value="urgent">Urgent</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="repeatMode">Repeat</label>
+            <select id="repeatMode" name="repeatMode" [(ngModel)]="repeatMode" class="form-select">
+              <option value="none">None</option>
+              <option value="daily">Daily</option>
+              <option value="weekly">Weekly</option>
+              <option value="monthly">Monthly</option>
+              <option value="yearly">Yearly</option>
+            </select>
+          </div>
+
+          <div class="form-group toggle-group">
+            <label class="toggle-label">
+              <input type="checkbox" name="voiceEnabled" [(ngModel)]="voiceEnabled" class="form-checkbox" />
+              <span>Voice Announcement</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-ghost" (click)="resetForm()">Clear</button>
+          <button type="submit" class="btn-primary" [disabled]="!title.trim() || !date || !time">Create Reminder</button>
+        </div>
+      </form>
+
+      <!-- Realtime parsed NLP suggestion banner -->
+      <div class="suggestion-banner glass-card" *ngIf="parsedSuggestion()">
+        <div class="suggestion-header">
+          <span class="sparkle">✨</span>
+          <h4>AI Parsed Reminder</h4>
+        </div>
+        <div class="suggestion-body">
+          <p><strong>Title:</strong> {{ parsedSuggestion()?.title }}</p>
+          <p><strong>Date:</strong> {{ parsedSuggestion()?.date }}</p>
+          <p><strong>Time:</strong> {{ formatTime(parsedSuggestion()?.time || '') }}</p>
+          <div class="suggestion-badges">
+            <span class="badge" [class]="'badge-' + parsedSuggestion()?.category">{{ parsedSuggestion()?.category }}</span>
+            <span class="badge" [class]="'badge-' + parsedSuggestion()?.priority">{{ parsedSuggestion()?.priority }}</span>
+          </div>
+        </div>
+        <button class="btn-primary mini" (click)="acceptSuggestion()">Accept & Add</button>
+      </div>
+
+    </div>
+  </div>
+
+</div>

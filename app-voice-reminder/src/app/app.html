@@ -1,0 +1,29 @@
+<app-titlebar />
+
+<!-- Mobile Header (hidden on desktop, styled in app.scss) -->
+<header class="mobile-header">
+  <button class="hamburger-btn" (click)="layoutService.toggleMobileMenu()" aria-label="Toggle Menu">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </button>
+  <span class="mobile-title">VoiceAI Reminder</span>
+</header>
+
+<div class="app-shell">
+  @if (layoutService.isMobileMenuOpen()) {
+    <div class="mobile-backdrop" (click)="layoutService.closeMobileMenu()"></div>
+  }
+
+  <app-sidebar [class.mobile-open]="layoutService.isMobileMenuOpen()" />
+
+  <div class="main-content">
+    <div class="page-outlet">
+      <router-outlet />
+    </div>
+  </div>
+</div>
+
+<app-reminder-notification />

@@ -1,0 +1,155 @@
+.settings-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.section-header {
+  margin-bottom: var(--space-2);
+}
+
+.page-title {
+  font-size: var(--text-3xl);
+  margin-bottom: var(--space-1);
+}
+
+.subtitle {
+  color: var(--text-secondary);
+  font-size: var(--text-sm);
+}
+
+// ─── Settings Grid ───────────────────────────────────────────
+.settings-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-6);
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.settings-card {
+  padding: var(--space-5);
+  border-radius: var(--radius-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+
+  &.full-width {
+    grid-column: span 2;
+
+    @media (max-width: 768px) {
+      grid-column: span 1;
+    }
+  }
+
+  .card-title {
+    font-size: var(--text-md);
+    color: var(--text-primary);
+    font-weight: 600;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: var(--space-3);
+  }
+}
+
+.card-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+
+  &.voice-settings-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-5);
+
+    @media (max-width: 580px) {
+      grid-template-columns: 1fr;
+    }
+
+    .voice-select-group {
+      grid-column: span 2;
+      @media (max-width: 580px) {
+        grid-column: span 1;
+      }
+    }
+
+    .voice-test-action {
+      grid-column: span 2;
+      display: flex;
+      justify-content: flex-start;
+      margin-top: var(--space-2);
+      @media (max-width: 580px) {
+        grid-column: span 1;
+      }
+    }
+  }
+}
+
+// ─── Custom Range Sliders ────────────────────────────────────
+.form-range {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 6px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  outline: none;
+  margin: 10px 0;
+
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--gradient-primary);
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(79, 142, 247, 0.4);
+    transition: transform var(--transition-fast);
+
+    &:hover {
+      transform: scale(1.2);
+    }
+  }
+
+  &::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border: none;
+    border-radius: 50%;
+    background: var(--gradient-primary);
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(79, 142, 247, 0.4);
+    transition: transform var(--transition-fast);
+
+    &:hover {
+      transform: scale(1.2);
+    }
+  }
+}
+
+// ─── Actions Footer ──────────────────────────────────────────
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+
+  &.full-width {
+    grid-column: span 2;
+    @media (max-width: 768px) {
+      grid-column: span 1;
+    }
+  }
+
+  .status-msg {
+    font-size: var(--text-sm);
+    color: var(--neon-green);
+    font-weight: 500;
+    animation: fadeIn 0.3s ease both;
+  }
+}

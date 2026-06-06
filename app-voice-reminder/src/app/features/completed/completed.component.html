@@ -1,0 +1,85 @@
+<div class="completed-container animate-fade-in-up">
+  
+  <div class="section-header">
+    <div>
+      <h1 class="page-title">Completed Archive 📁</h1>
+      <p class="subtitle">A record of your productivity and completed tasks</p>
+    </div>
+
+    <!-- Filter Controls -->
+    <div class="filters">
+      <div class="filter-group">
+        <label>Category</label>
+        <select [ngModel]="categoryFilter()" (ngModelChange)="categoryFilter.set($event)" class="form-select mini">
+          <option value="all">All Categories</option>
+          <option value="general">General</option>
+          <option value="work">Work</option>
+          <option value="health">Health</option>
+          <option value="personal">Personal</option>
+          <option value="study">Study</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Priority</label>
+        <select [ngModel]="priorityFilter()" (ngModelChange)="priorityFilter.set($event)" class="form-select mini">
+          <option value="all">All Priorities</option>
+          <option value="low">Low</option>
+          <option value="medium">Medium</option>
+          <option value="high">High</option>
+          <option value="urgent">Urgent</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reminders List -->
+  @if (isLoading()) {
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Syncing completed items...</p>
+    </div>
+  } @else if (filteredReminders().length === 0) {
+    <div class="empty-state glass-card">
+      <div class="empty-icon">📁</div>
+      <h3>Archive is empty</h3>
+      <p>No completed reminders match your filter criteria.</p>
+    </div>
+  } @else {
+    <div class="reminder-cards-grid">
+      @for (r of filteredReminders(); track r.id) {
+        <div class="reminder-card glass-card completed">
+          <div [class]="'priority-bar ' + getPriorityClass(r.priority)"></div>
+          <div class="card-content">
+            <div class="card-header">
+              <span class="card-time">{{ formatDate(r.date) }} at {{ formatTime(r.time) }}</span>
+              <span [class]="getCategoryClass(r.category)">{{ r.category }}</span>
+            </div>
+            <h3 class="card-title">{{ r.title }}</h3>
+            @if (r.description) {
+              <p class="card-desc">{{ r.description }}</p>
+            }
+            <div class="card-footer">
+              <span class="badge priority-badge" [class]="'badge-' + r.priority">{{ r.priority }}</span>
+              <span class="completed-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                Done
+              </span>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="card-actions">
+            <button class="action-btn delete" (click)="deleteReminder(r.id)" title="Permanently Delete">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+</div>

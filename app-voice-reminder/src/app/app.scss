@@ -1,0 +1,117 @@
+// App shell layout — full screen, sidebar + main content
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--bg-base);
+}
+
+.app-shell {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--bg-primary);
+  position: relative;
+
+  // Subtle grid background pattern
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(79,142,247,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(79,142,247,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+}
+
+.page-outlet {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+  z-index: 1;
+  padding: var(--space-6);
+  scroll-behavior: smooth;
+}
+
+// ─── Mobile Header (top navigation bar) ───────────────────
+.mobile-header {
+  display: none; // hidden by default on desktop
+  height: 56px;
+  align-items: center;
+  padding: 0 var(--space-4);
+  background: var(--gradient-sidebar);
+  border-bottom: 1px solid var(--border);
+  gap: var(--space-3);
+  z-index: 999;
+  flex-shrink: 0;
+
+  .hamburger-btn {
+    background: none;
+    border: none;
+    color: var(--text-primary);
+    cursor: pointer;
+    padding: var(--space-1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-sm);
+    transition: background var(--transition-fast);
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    svg {
+      width: 22px;
+      height: 22px;
+    }
+  }
+
+  .mobile-title {
+    font-family: var(--font-display);
+    font-size: var(--text-md);
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.01em;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+}
+
+// ─── Mobile Overlay Backdrop ─────────────────────────────
+.mobile-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 999;
+  animation: fadeIn 0.2s ease both;
+}
+
+// ─── Responsive Media Queries ─────────────────────────────
+@media (max-width: 768px) {
+  .mobile-header {
+    display: flex;
+  }
+
+  .page-outlet {
+    padding: var(--space-4); // reduce padding to fit mobile viewport
+  }
+}
+

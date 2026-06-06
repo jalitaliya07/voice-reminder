@@ -1,0 +1,37 @@
+# Dependency directories
+node_modules/
+dist/
+release/
+tmp/
+.angular/
+.vscode/
+
+# Build and local files
+app-voice-reminder/dist/
+app-voice-reminder/.angular/
+api-voice-reminder/node_modules/
+app-voice-reminder/node_modules/
+
+# Local env files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Database files
+database/*.db
+database/*.db-journal
+api-voice-reminder/database/*.db
+api-voice-reminder/database/*.db-journal
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+logs/
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db

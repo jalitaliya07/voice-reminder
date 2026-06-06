@@ -1,0 +1,53 @@
+<nav class="sidebar" [class.collapsed]="isCollapsed()">
+
+  <!-- Logo -->
+  <div class="sidebar-logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+        <path d="M19 10a7 7 0 0 1-14 0M12 19v4m-4 0h8"/>
+      </svg>
+    </div>
+    @if (!isCollapsed()) {
+      <div class="logo-text">
+        <span class="logo-name">VoiceAI</span>
+        <span class="logo-sub">Reminder</span>
+      </div>
+    }
+  </div>
+
+  <!-- Nav items -->
+  <ul class="nav-list">
+    @for (item of navItems; track item.path) {
+      <li>
+        <a
+          class="nav-item"
+          [routerLink]="item.path"
+          routerLinkActive="active"
+          [title]="isCollapsed() ? item.label : ''"
+          (click)="onNavItemClick()"
+        >
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path [attr.d]="getIconPath(item.icon)" />
+            </svg>
+          </span>
+          @if (!isCollapsed()) {
+            <span class="nav-label">{{ item.label }}</span>
+          }
+          @if (item.badge && item.badge > 0 && !isCollapsed()) {
+            <span class="nav-badge">{{ item.badge }}</span>
+          }
+        </a>
+      </li>
+    }
+  </ul>
+
+  <!-- Collapse toggle -->
+  <button class="collapse-btn" (click)="toggleCollapse()" [title]="isCollapsed() ? 'Expand' : 'Collapse'">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path [attr.d]="getIconPath(isCollapsed() ? 'chevron-right' : 'chevron-left')" />
+    </svg>
+  </button>
+
+</nav>
