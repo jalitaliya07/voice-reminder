@@ -54,6 +54,15 @@ app.use((err, _req, res, _next) => {
 (async () => {
   try {
     await initDb();
+    
+    // Force theme setting to default to light mode
+    try {
+      const { execute } = require('../database/db');
+      execute("UPDATE settings SET value = 'light' WHERE key = 'theme'");
+    } catch (dbErr) {
+      console.warn('[DB Init] Could not update theme setting:', dbErr.message);
+    }
+
     app.listen(PORT, () => {
       console.log(`[api-voice-reminder] Server running on http://localhost:${PORT}`);
     });

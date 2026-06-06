@@ -19,7 +19,7 @@ export class SettingsComponent implements OnInit {
 
   // Form values
   userName = '';
-  theme: 'dark' | 'light' = 'dark';
+  theme: 'dark' | 'light' = 'light';
   voiceName = 'default';
   voiceVolume = 0.8;
   voiceRate = 1.0;
@@ -59,7 +59,7 @@ export class SettingsComponent implements OnInit {
       next: res => {
         const s = res.data;
         this.userName = s.user_name ?? 'user';
-        this.theme = (s.theme as any) ?? 'dark';
+        this.theme = (s.theme as any) ?? 'light';
         this.voiceName = s.voice_name ?? 'default';
         this.voiceVolume = parseFloat(s.voice_volume ?? '0.8');
         this.voiceRate = parseFloat(s.voice_rate ?? '1.0');

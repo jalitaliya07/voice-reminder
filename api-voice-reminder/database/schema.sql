@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS settings (
 );
 
 INSERT OR IGNORE INTO settings (key, value) VALUES
-  ('theme', 'dark'),
+  ('theme', 'light'),
   ('voice_name', 'default'),
   ('voice_volume', '0.9'),
   ('voice_rate', '1.0'),

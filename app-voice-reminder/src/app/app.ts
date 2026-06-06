@@ -33,13 +33,13 @@ export class App implements OnInit, OnDestroy {
   ) {
     // Reactively watch for theme changes and apply body classes
     effect(() => {
-      const theme = this.settingsService.settings().theme || 'dark';
-      if (theme === 'light') {
-        document.body.classList.add('light-theme');
-        document.body.classList.remove('dark-theme');
-      } else {
+      const theme = this.settingsService.settings().theme || 'light';
+      if (theme === 'dark') {
         document.body.classList.add('dark-theme');
         document.body.classList.remove('light-theme');
+      } else {
+        document.body.classList.add('light-theme');
+        document.body.classList.remove('dark-theme');
       }
     });
   }
